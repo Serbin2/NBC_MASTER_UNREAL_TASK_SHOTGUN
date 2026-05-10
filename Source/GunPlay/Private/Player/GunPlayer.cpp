@@ -38,7 +38,7 @@ void AGunPlayer::BeginPlay()
 	
 	for (auto gun : GunClasses)
 	{
-		UTaskGun* pGun = NewObject<UTaskGun>(this, gun);
+		ATaskGun* pGun = GetWorld()->SpawnActor<ATaskGun>(gun);
 		pGun->SetOwner(this);
 		Guns.Add(pGun);
 	}
@@ -48,6 +48,8 @@ void AGunPlayer::BeginPlay()
 		MyGun = Guns[0];
 		CurrentIndex = 0;
 	}
+
+	DefaultArmLength = CameraBoom->TargetArmLength;
 }
 
 void AGunPlayer::ChangeWeapon(int IndexDir)
@@ -66,7 +68,40 @@ void AGunPlayer::ChangeWeapon(int IndexDir)
 void AGunPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	UpdateZoom(DeltaTime);
+}
 
+void AGunPlayer::UpdateZoom(float DeltaTime)
+{
+	float TargetLength;
+	FVector TargetOffset;
+
+	if (bIsZooming && IsValid(MyGun))
+	{
+		TargetLength = DefaultArmLength * 0.5f;
+		FVector Forward = GetActorForwardVector();
+		Forward.Z = 0.f;
+		Forward.Normalize();
+		TargetOffset = Forward * MyGun->GetRange();
+	}
+	else
+	{
+		TargetLength = DefaultArmLength;
+		TargetOffset = FVector::ZeroVector;
+	}
+
+	CameraBoom->TargetArmLength = FMath::FInterpTo(CameraBoom->TargetArmLength, TargetLength, DeltaTime, ZoomInterpSpeed);
+	CameraBoom->TargetOffset = FMath::VInterpTo(CameraBoom->TargetOffset, TargetOffset, DeltaTime, ZoomInterpSpeed);
+}
+
+void AGunPlayer::ZoomStart()
+{
+	bIsZooming = true;
+}
+
+void AGunPlayer::ZoomEnd()
+{
+	bIsZooming = false;
 }
 
 // Called to bind functionality to input

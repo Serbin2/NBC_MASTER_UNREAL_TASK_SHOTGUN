@@ -7,13 +7,21 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Player/GunPlayer.h"
 
-void UGunShotgun::GunShot(FVector ShotDirection)
+AGunShotgun::AGunShotgun()
 {
-	Super::GunShot(ShotDirection);
-	if (!IsValid(OwnPlayer))	return;
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow,
-		FString::Printf(TEXT("Shotgun Shot")));
-	
+	Range = 300.f;
+	MaxAmmo = 20;
+}
+
+void AGunShotgun::PlayEffect()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Shotgun Shot"));
+}
+
+void AGunShotgun::ProcessFiring(FVector ShotDirection)
+{
+	if (!IsValid(OwnPlayer)) return;
+
 	for (int i = 0; i < NumOfBullets; i++)
 	{
 		float RandomYaw = FMath::RandRange(-45.f, 45.f);
@@ -22,7 +30,7 @@ void UGunShotgun::GunShot(FVector ShotDirection)
 	}
 }
 
-void UGunShotgun::ShotSplit(FVector ShotDirection)
+void AGunShotgun::ShotSplit(FVector ShotDirection)
 {
 	if (!IsValid(OwnPlayer))	return;
 	TArray<AActor*> actorsToIgnore;
@@ -31,7 +39,7 @@ void UGunShotgun::ShotSplit(FVector ShotDirection)
 
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(),
 		OwnPlayer->GetActorLocation(),
-		OwnPlayer->GetActorLocation() + ShotDirection * 300.f,
+		OwnPlayer->GetActorLocation() + ShotDirection * Range,
 		UEngineTypes::ConvertToTraceType(ECC_Visibility),
 		false,actorsToIgnore,
 		EDrawDebugTrace::ForDuration, result,

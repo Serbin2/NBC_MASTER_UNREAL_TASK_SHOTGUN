@@ -29,6 +29,8 @@ private:
 	void ChangeWeapon(const FInputActionValue& Value);
 	void Shot();
 	void RotateTowardMouse();
+	void ZoomStart();
+	void ZoomEnd();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
@@ -41,4 +43,7 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> ChangeWeaponAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> ZoomAction;
 };

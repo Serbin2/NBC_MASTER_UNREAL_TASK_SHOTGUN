@@ -4,13 +4,41 @@
 #include "Weapons/TaskGun.h"
 #include "Player/GunPlayer.h"
 
-void UTaskGun::GunShot(FVector ShotDirection)
+void ATaskGun::GunShot(FVector ShotDirection)
 {
+	if (!CanFire) return;
+
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow,
 		FString::Printf(TEXT("ShotDirection: X=%.2f Y=%.2f Z=%.2f"), ShotDirection.X, ShotDirection.Y, ShotDirection.Z));
+
+	if (CheckAmmo())
+	{
+		PlayEffect();
+		ProcessFiring(ShotDirection);
+		UpdateAmmo();
+		Super::Fire();
+	}
 }
 
-void UTaskGun::SetOwner(AGunPlayer* Owner)
+void ATaskGun::SetOwner(AGunPlayer* GunOwner)
 {
-	OwnPlayer = Owner;
+	OwnPlayer = GunOwner;
+}
+
+bool ATaskGun::CheckAmmo()
+{
+	return CurrentAmmo >= AmmoPerFire;
+}
+
+void ATaskGun::PlayEffect()
+{
+}
+
+void ATaskGun::ProcessFiring(FVector ShotDirection)
+{
+}
+
+void ATaskGun::UpdateAmmo()
+{
+	CurrentAmmo -= AmmoPerFire;
 }

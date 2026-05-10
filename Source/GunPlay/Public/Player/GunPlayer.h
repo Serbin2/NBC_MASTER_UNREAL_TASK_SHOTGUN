@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "GunPlayer.generated.h"
 
-class UTaskGun;
+class ATaskGun;
 class USpringArmComponent;
 class UCameraComponent;
 
@@ -23,24 +23,35 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Gun")
 	void Shot();
-	
+
 	void ChangeWeapon(int IndexDir);
 	int CurrentIndex = 0;
 
+	void ZoomStart();
+	void ZoomEnd();
+
 	UPROPERTY(EditDefaultsOnly, Category = "Gun")
-	TObjectPtr<UTaskGun> MyGun;
-	TArray<TObjectPtr<UTaskGun>> Guns;
+	TObjectPtr<ATaskGun> MyGun;
+	TArray<TObjectPtr<ATaskGun>> Guns;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Gun")
-	TArray<TSubclassOf<UTaskGun>> GunClasses;
+	TArray<TSubclassOf<ATaskGun>> GunClasses;
 	
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	void UpdateZoom(float DeltaTime);
+
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> FollowCamera;
+
+	bool bIsZooming = false;
+	float DefaultArmLength = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Camera")
+	float ZoomInterpSpeed = 5.f;
 };

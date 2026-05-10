@@ -6,17 +6,17 @@
 #include "TaskGun.h"
 #include "GunShotgun.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class GUNPLAY_API UGunShotgun : public UTaskGun
+class GUNPLAY_API AGunShotgun : public ATaskGun
 {
 	GENERATED_BODY()
 public:
-	void GunShot(FVector ShotDirection) override;
+	AGunShotgun();
 	void ShotSplit(FVector ShotDirection);
-	
+
 protected:
+	virtual void PlayEffect() override;
+	virtual void ProcessFiring(FVector ShotDirection) override;
+
 	int NumOfBullets = 5;
 };

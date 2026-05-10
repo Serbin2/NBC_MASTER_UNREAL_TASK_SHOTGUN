@@ -3,24 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Object.h"
+#include "Weapons/WeaponBase.h"
 #include "TaskGun.generated.h"
 
 class AGunPlayer;
-/**
- * 
- */
+
 UCLASS()
-class GUNPLAY_API UTaskGun : public UObject
+class GUNPLAY_API ATaskGun : public AWeaponBase
 {
-	GENERATED_BODY()	
+	GENERATED_BODY()
 public:
-	
+
 	UFUNCTION(BlueprintCallable, Category="Gun")
 	virtual void GunShot(FVector ShotDirection);
-	
-	void SetOwner(AGunPlayer* Owner);
-	
+
+	void SetOwner(AGunPlayer* GunOwner);
+
+	float GetRange() const { return Range; }
+
 	UPROPERTY()
 	TObjectPtr<AGunPlayer> OwnPlayer = nullptr;
+
+protected:
+	virtual bool CheckAmmo();
+	virtual void PlayEffect();
+	virtual void ProcessFiring(FVector ShotDirection);
+	virtual void UpdateAmmo();
 };

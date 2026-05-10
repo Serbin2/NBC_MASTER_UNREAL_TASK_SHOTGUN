@@ -8,24 +8,26 @@
 #include "Player/GunPlayer.h"
 
 
-void UGunSniper::GunShot(FVector ShotDirection)
+void AGunSniper::PlayEffect()
 {
-	Super::GunShot(ShotDirection);
-	if (!IsValid(OwnPlayer))	return;
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow,
-		FString::Printf(TEXT("Sniper Shot")));
-	
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Sniper Shot"));
+}
+
+void AGunSniper::ProcessFiring(FVector ShotDirection)
+{
+	if (!IsValid(OwnPlayer)) return;
+
 	TArray<AActor*> actorsToIgnore;
 	actorsToIgnore.Add(OwnPlayer);
 	TArray<FHitResult> result;
 
 	UKismetSystemLibrary::LineTraceMulti(GetWorld(),
 		OwnPlayer->GetActorLocation(),
-		OwnPlayer->GetActorLocation() + ShotDirection * 1000.f,		
+		OwnPlayer->GetActorLocation() + ShotDirection * Range,
 		UEngineTypes::ConvertToTraceType(ECC_Visibility),
-		false,actorsToIgnore,
+		false, actorsToIgnore,
 		EDrawDebugTrace::ForDuration, result,
-		true,FLinearColor::Red,FLinearColor::Green,
+		true, FLinearColor::Red, FLinearColor::Green,
 		2.f
 		);
 

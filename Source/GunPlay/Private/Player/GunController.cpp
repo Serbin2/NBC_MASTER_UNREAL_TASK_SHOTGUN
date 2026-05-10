@@ -31,6 +31,8 @@ void AGunController::SetupInputComponent()
 		EIC->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AGunController::Move);
 		EIC->BindAction(ShotAction, ETriggerEvent::Started, this, &AGunController::Shot);
 		EIC->BindAction(ChangeWeaponAction, ETriggerEvent::Started, this, &AGunController::ChangeWeapon);
+		EIC->BindAction(ZoomAction, ETriggerEvent::Started, this, &AGunController::ZoomStart);
+		EIC->BindAction(ZoomAction, ETriggerEvent::Completed, this, &AGunController::ZoomEnd);
 	}
 }
 
@@ -65,6 +67,20 @@ void AGunController::ChangeWeapon(const FInputActionValue& Value)
 
 	int IndexDir = FMath::RoundToInt(Value.Get<float>());
 	pPlayer->ChangeWeapon(IndexDir);
+}
+
+void AGunController::ZoomStart()
+{
+	AGunPlayer* pPlayer = Cast<AGunPlayer>(GetPawn());
+	if (!pPlayer) return;
+	pPlayer->ZoomStart();
+}
+
+void AGunController::ZoomEnd()
+{
+	AGunPlayer* pPlayer = Cast<AGunPlayer>(GetPawn());
+	if (!pPlayer) return;
+	pPlayer->ZoomEnd();
 }
 
 void AGunController::RotateTowardMouse()
